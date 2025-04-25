@@ -1,6 +1,32 @@
-﻿services:
+﻿version: '3.4'
+
+services:
   taskmanager:
     image: taskmanager
     build:
       context: .
       dockerfile: TaskManager/Dockerfile
+    ports:
+      - "6002:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_HTTP_PORTS: 8080
+      ConnectionStrings__DefaultConnection: Server=mysql;Port = 3306;Database=tasknotesdb;User=user;Password=password
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword  
+      MYSQL_DATABASE: tasknotesdb        
+      MYSQL_USER: user                   
+      MYSQL_PASSWORD: password          
+    ports:
+      - "3306:3306" 
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "user", "-p$password" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5

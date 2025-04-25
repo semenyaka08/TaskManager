@@ -1,6 +1,9 @@
-﻿namespace TaskManager.DataBase;
+﻿using Microsoft.EntityFrameworkCore;
+using TaskManager.Models;
 
-public class TaskNoteDbContext
+namespace TaskManager.DataBase;
+
+public class TaskNoteDbContext(DbContextOptions<TaskNoteDbContext> options) : DbContext(options)
 {
-    
+    public DbSet<TaskNote> TaskNotes { get; set; }
 }
